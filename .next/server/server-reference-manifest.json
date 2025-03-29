@@ -1,5 +1,9 @@
 {
   "node": {},
   "edge": {},
+<<<<<<< HEAD
   "encryptionKey": "lDry/qzziFBl83gukkJE8qAUiyiqxO+x+rkR9AAV2+A="
+=======
+  "encryptionKey": "RRZKxCvnhgdUCX6//W7vTyreb2wd0mOaXETuRzJqqfw="
+>>>>>>> ceb7e6c (added pay message)
 }

@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
+=======
+  "/api/proxy-upload/route": "app/api/proxy-upload/route.js",
+>>>>>>> ceb7e6c (added pay message)
   "/page": "app/page.js"
 }

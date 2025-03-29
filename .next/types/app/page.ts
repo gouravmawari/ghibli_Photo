@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // File: C:\Users\rsmaw\OneDrive\Desktop\LIVE_SYSTUM\ghibli\ghibli\src\app\page.js
+=======
+// File: /Volumes/ExSSD/rishit/documents/web/frontend/ghibli/src/app/page.js
+>>>>>>> ceb7e6c (added pay message)
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

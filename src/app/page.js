@@ -3,7 +3,11 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+<<<<<<< HEAD
 import { useToast } from "@/hooks/use-toast";
+=======
+import { useToast } from "@/components/providers";
+>>>>>>> ceb7e6c (added pay message)
 import Dropzone from "@/components/dropzone";
 import StylePresetButton from "@/components/style-preset-button";
 import { downloadImage } from "@/lib/utils";
@@ -439,8 +443,12 @@ export default function Home() {
             <div className="glass-card p-8 max-w-md w-full mx-4 relative">
               <h3 className="text-xl font-semibold mb-4 text-white/90">Processing Your Request</h3>
               <p className="text-gray-400 mb-6">
+<<<<<<< HEAD
                 Your Ghibli-style artwork will be sent to your email within 10-60 minutes. 
                 Please check your inbox and spam folder.
+=======
+                We are currently facing high volume of images including spam images. Please check your mail and follow the steps to get your image under 15 mins.
+>>>>>>> ceb7e6c (added pay message)
               </p>
               <div className="flex justify-end">
                 <Button 
