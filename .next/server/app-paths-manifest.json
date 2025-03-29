@@ -1,9 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/terms/page": "app/terms/page.js",
-  "/privacy/page": "app/privacy/page.js",
-  "/shipping/page": "app/shipping/page.js",
-  "/contact/page": "app/contact/page.js",
-  "/refund/page": "app/refund/page.js"
+  "/api/create-order/route": "app/api/create-order/route.js",
+  "/page": "app/page.js"
 }

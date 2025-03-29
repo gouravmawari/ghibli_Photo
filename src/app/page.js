@@ -7,6 +7,7 @@ import { useToast } from "@/components/providers";
 import Dropzone from "@/components/dropzone";
 import StylePresetButton from "@/components/style-preset-button";
 import { downloadImage } from "@/lib/utils";
+import { RAZORPAY_CONFIG } from "@/config/razorpay";
 
 /**
  * Home page component with the Ghibli Image Recreator UI
@@ -23,6 +24,7 @@ export default function Home() {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [email, setEmail] = useState('');
   const [showAlert, setShowAlert] = useState(false);
+  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   
   // State for prompt and processing
   const [prompt, setPrompt] = useState("Transform this image into Studio Ghibli art style with vibrant colors, whimsical elements, and dreamlike quality.");
@@ -30,6 +32,17 @@ export default function Home() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [activePreset, setActivePreset] = useState(null);
   const [showPromptMessage, setShowPromptMessage] = useState(false);
+  
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
   
   // Handle mouse move for gradient cards
   useEffect(() => {
@@ -139,14 +152,6 @@ export default function Home() {
   }, []);
   
   /**
-   * Handle image generation
-   */
-  const handleGenerate = useCallback(() => {
-    if (!image) return;
-    setShowAlert(true);
-  }, [image]);
-  
-  /**
    * Handle confirmation and start generation
    */
   const handleConfirmGenerate = useCallback(() => {
@@ -220,6 +225,82 @@ export default function Home() {
         });
       });
   }, [image, email, toast]);
+  
+  /**
+   * Handle Razorpay payment
+   */
+  const handlePayment = useCallback(async () => {
+    if (!image || !email) {
+      toast({
+        title: "Missing Information",
+        message: "Please upload an image and provide your email address",
+        type: "error"
+      });
+      return;
+    }
+
+    try {
+      // Create order
+      const orderResponse = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: 49, // ₹499
+          currency: 'INR'
+        }),
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create order');
+      }
+
+      const orderData = await orderResponse.json();
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: "Ghibli Image Generator",
+        description: "Premium Image Generation Service",
+        order_id: orderData.id,
+        prefill: {
+          email: email,
+        },
+        theme: {
+          color: "#000000"
+        },
+        handler: function (response) {
+          setIsPaymentComplete(true);
+          handleConfirmGenerate();
+        },
+        modal: {
+          ondismiss: function() {
+            console.log('Payment modal closed');
+          }
+        }
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast({
+        title: "Payment Error",
+        message: "Failed to initialize payment. Please try again.",
+        type: "error"
+      });
+    }
+  }, [image, email, handleConfirmGenerate, toast]);
+  
+  /**
+   * Handle image generation
+   */
+  const handleGenerate = useCallback(() => {
+    if (!image) return;
+    setShowAlert(true);
+  }, [image]);
   
   /**
    * Handle image download
@@ -414,13 +495,11 @@ export default function Home() {
                 <div className="mt-8">
                   <Button 
                     variant="gradient" 
+                    onClick={handlePayment}
+                    disabled={isGenerating || !image || !email}
                     className="w-full"
-                    onClick={handleGenerate}
-                    disabled={!image || isGenerating || !email.trim()}
-                    isLoading={isGenerating}
-                    icon={icons.generate}
                   >
-                    Generate Ghibli Art
+                    {isGenerating ? 'Processing...' : 'Generate Ghibli Art'}
                   </Button>
                   {!email.trim() && image && (
                     <p className="text-xs text-amber-400 mt-2 text-center">
@@ -444,10 +523,10 @@ export default function Home() {
               <div className="flex justify-end">
                 <Button 
                   variant="gradient" 
-                  onClick={handleConfirmGenerate}
+                  onClick={handlePayment}
                   disabled={isGenerating}
                 >
-                  {isGenerating ? 'Processing...' : 'OK'}
+                  {isGenerating ? 'Processing...' : 'Proceed to Payment'}
                 </Button>
               </div>
             </div>
