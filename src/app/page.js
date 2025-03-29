@@ -673,6 +673,189 @@ export default function Home() {
           </div>
         )}
         
+        {/* Gallery Section */}
+        <section className="mt-16 mb-12">
+          <div className="text-center mb-10">
+            <div className="relative inline-block">
+              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-blue-500/20 rounded-lg blur opacity-30"></div>
+              <h2 className="relative text-2xl font-bold text-gradient-purple-blue">Gallery</h2>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto auto-rows-[200px] auto-flow-dense">
+            {/* Row 1 */}
+            <div className="group relative rounded-xl overflow-hidden glass-card row-span-2">
+              <img
+                src="/gallery/1.jpeg"
+                alt="Ghibli Artwork 1"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Featured Artwork</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card">
+              <img
+                src="/gallery/2.jpeg"
+                alt="Ghibli Artwork 2"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 2</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card row-span-2">
+              <img
+                src="/gallery/3.jpeg"
+                alt="Ghibli Artwork 3"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 3</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card">
+              <img
+                src="/gallery/4.jpeg"
+                alt="Ghibli Artwork 4"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 4</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 2 */}
+            <div className="group relative rounded-xl overflow-hidden glass-card">
+              <img
+                src="/gallery/5.jpeg"
+                alt="Ghibli Artwork 5"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 5</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card row-span-2">
+              <img
+                src="/gallery/6.jpeg"
+                alt="Ghibli Artwork 6"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 6</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card">
+              <img
+                src="/gallery/7.jpeg"
+                alt="Ghibli Artwork 7"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 7</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card row-span-2">
+              <img
+                src="/gallery/8.png"
+                alt="Ghibli Artwork 8"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 8</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 3 */}
+            <div className="group relative rounded-xl overflow-hidden glass-card">
+              <img
+                src="/gallery/9.png"
+                alt="Ghibli Artwork 9"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 9</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card row-span-2">
+              <img
+                src="/gallery/10.png"
+                alt="Ghibli Artwork 10"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 10</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card">
+              <img
+                src="/gallery/11.png"
+                alt="Ghibli Artwork 11"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 11</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="group relative rounded-xl overflow-hidden glass-card row-span-2">
+              <img
+                src="/gallery/12.png"
+                alt="Ghibli Artwork 12"
+                className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="text-white text-sm font-medium">Ghibli Artwork 12</h3>
+                  <p className="text-gray-300 text-xs mt-1">Transformed by AI</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
         {/* How It Works Section */}
         <section className="mt-16 mb-12">
           <div className="text-center mb-10">
