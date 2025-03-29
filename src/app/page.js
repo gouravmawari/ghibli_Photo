@@ -507,8 +507,17 @@ export default function Home() {
           <p>© 2025 Ghibli Image Generator. All rights reserved.</p>
           <p className="mt-2">Powered by Next.js, Tailwind CSS, and OpenAI</p>
           <p className="mt-2">Made with <span className="text-red-500">❤️</span> by Team Raga</p>
-      </footer>
-    </div>
+          
+          {/* Policy Links */}
+          <div className="mt-6 flex flex-wrap justify-center gap-4">
+            <a href="/terms" className="hover:text-white transition-colors">Terms & Conditions</a>
+            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/shipping" className="hover:text-white transition-colors">Shipping Policy</a>
+            <a href="/contact" className="hover:text-white transition-colors">Contact Us</a>
+            <a href="/refund" className="hover:text-white transition-colors">Cancellation & Refund</a>
+          </div>
+        </footer>
+      </div>
     </main>
   );
 }
