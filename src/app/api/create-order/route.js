@@ -11,7 +11,7 @@ export async function POST(request) {
     const { amount, currency = 'INR' } = await request.json();
 
     const order = await razorpay.orders.create({
-      amount: amount * 100, // Convert to paise
+      amount: amount, // Amount is already in paise from the client
       currency,
       receipt: `receipt_${Date.now()}`,
       notes: {

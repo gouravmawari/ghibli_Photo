@@ -19,9 +19,9 @@ export default function Home() {
   const cardsRef = useRef([]);
   
   // State for image handling
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [generatedImage, setGeneratedImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
+  const [generatedImages, setGeneratedImages] = useState([]);
   const [email, setEmail] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
@@ -81,39 +81,84 @@ export default function Home() {
   /**
    * Handle file upload
    */
-  const handleFileDrop = useCallback((file) => {
-    console.log('File dropped:', file);
-    setImage(file);
+  const handleFileDrop = useCallback((files) => {
+    console.log('Files dropped:', files);
     
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      console.log('FileReader loaded, preview data:', reader.result ? 'Data available' : 'No data');
-      setPreview(reader.result);
-    };
-    reader.onerror = (error) => {
-      console.error('FileReader error:', error);
+    // Check if adding more files would exceed the limit
+    if (images.length + files.length > 3) {
       toast({
-        title: "Error loading image",
-        message: "There was a problem reading your file",
+        title: "Maximum limit reached",
+        message: "You can only upload up to 3 images at a time",
         type: "error"
       });
-    };
-    reader.readAsDataURL(file);
+      return;
+    }
+    
+    // Convert FileList to Array and filter for valid files
+    const validFiles = Array.from(files).filter(file => {
+      const isValidType = ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
+      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB limit
+      
+      if (!isValidType) {
+        toast({
+          title: "Invalid file type",
+          message: "Please upload only PNG, JPG, or JPEG files",
+          type: "error"
+        });
+      }
+      
+      if (!isValidSize) {
+        toast({
+          title: "File too large",
+          message: "Please upload files smaller than 5MB",
+          type: "error"
+        });
+      }
+      
+      return isValidType && isValidSize;
+    });
+
+    // Process valid files
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        console.log('FileReader loaded, preview data:', reader.result ? 'Data available' : 'No data');
+        setPreviews(prev => [...prev, reader.result]);
+        setImages(prev => [...prev, file]);
+      };
+      reader.onerror = (error) => {
+        console.error('FileReader error:', error);
+        toast({
+          title: "Error loading image",
+          message: "There was a problem reading your file",
+          type: "error"
+        });
+      };
+      reader.readAsDataURL(file);
+    });
     
     toast({
-      title: "Image uploaded",
-      message: "Your image is ready for transformation",
+      title: "Images uploaded",
+      message: `${validFiles.length} image(s) ready for transformation`,
       type: "success"
     });
-  }, [toast]);
+  }, [images.length, toast]);
+  
+  /**
+   * Remove an image
+   */
+  const handleRemoveImage = useCallback((index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
+  }, []);
   
   /**
    * Reset all state
    */
   const handleReset = useCallback(() => {
-    setImage(null);
-    setPreview(null);
-    setGeneratedImage(null);
+    setImages([]);
+    setPreviews([]);
+    setGeneratedImages([]);
     setPrompt("Transform this image into Studio Ghibli art style with vibrant colors, whimsical elements, and dreamlike quality.");
     setActivePreset(null);
   }, []);
@@ -159,87 +204,107 @@ export default function Home() {
     setIsGenerating(true);
     console.log('Starting image generation process...');
     console.log('Email being used:', email);
-    console.log('Image file:', image);
+    console.log('Image files:', images);
     
-    // Create FormData for the API request
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('photo', image);
-    
-    // Log FormData
-    console.log('FormData prepared with:', {
-      email: email,
-      photoName: image.name,
-      photoType: image.type,
-      photoSize: `${(image.size / 1024).toFixed(2)} KB`
-    });
-    
-    // Make the API request
-    fetch('/api/proxy-upload', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => {
-        console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries([...response.headers]));
-        
-        const responseClone = response.clone();
-        
-        if (!response.ok) {
-          console.error('Server returned error status:', response.status);
-          return response.text().then(text => {
-            console.error('Error response body:', text);
-            throw new Error(`Server error: ${response.status} ${response.statusText}. See console for details.`);
+    // Process each image sequentially
+    const processImages = async () => {
+      for (let i = 0; i < images.length; i++) {
+        try {
+          // Create FormData for each image
+          const formData = new FormData();
+          formData.append('email', email);
+          formData.append('photo', images[i]);
+          
+          // Log FormData for current image
+          console.log(`Processing image ${i + 1}/${images.length}:`, {
+            email: email,
+            photoName: images[i].name,
+            photoType: images[i].type,
+            photoSize: `${(images[i].size / 1024).toFixed(2)} KB`
           });
+          
+          // Make the API request for current image
+          const response = await fetch('/api/proxy-upload', {
+            method: 'POST',
+            body: formData,
+          });
+          
+          console.log(`Response status for image ${i + 1}:`, response.status);
+          console.log(`Response headers for image ${i + 1}:`, Object.fromEntries([...response.headers]));
+          
+          const responseClone = response.clone();
+          
+          if (!response.ok) {
+            console.error(`Server returned error status for image ${i + 1}:`, response.status);
+            const errorText = await response.text();
+            console.error(`Error response body for image ${i + 1}:`, errorText);
+            throw new Error(`Server error for image ${i + 1}: ${response.status} ${response.statusText}`);
+          }
+          
+          const data = await response.json().catch(async (e) => {
+            console.error(`Error parsing JSON response for image ${i + 1}:`, e);
+            const text = await responseClone.text();
+            console.log(`Raw response text for image ${i + 1}:`, text);
+            throw new Error(`Invalid JSON response for image ${i + 1}`);
+          });
+          
+          console.log(`API Response data for image ${i + 1}:`, data);
+          
+          // If this is the last image, show success message
+          if (i === images.length - 1) {
+            setIsGenerating(false);
+            toast({
+              title: "Request submitted",
+              message: `Your ${images.length} Ghibli-style artwork(s) will be sent to your email within 10-60 minutes`,
+              type: "success"
+            });
+          }
+          
+          // Add a small delay between requests to prevent rate limiting
+          if (i < images.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
+          
+        } catch (error) {
+          console.error(`Error processing image ${i + 1}:`, error);
+          console.error('Error details:', error.message);
+          console.error('Error stack:', error.stack);
+          
+          setIsGenerating(false);
+          
+          toast({
+            title: "Request failed",
+            message: `There was an error processing image ${i + 1}: ${error.message}. Please try again.`,
+            type: "error"
+          });
+          break; // Stop processing remaining images if there's an error
         }
-        
-        return response.json().catch(e => {
-          console.error('Error parsing JSON response:', e);
-          return responseClone.text().then(text => {
-            console.log('Raw response text:', text);
-            throw new Error('Invalid JSON response from server. See console for raw response.');
-          });
-        });
-      })
-      .then(data => {
-        console.log('API Response data:', data);
-        setIsGenerating(false);
-        
-        toast({
-          title: "Request submitted",
-          message: "Your Ghibli-style artwork will be sent to your email within 10-60 minutes",
-          type: "success"
-        });
-      })
-      .catch(error => {
-        console.error('API Error details:', error);
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
-        
-        setIsGenerating(false);
-        
-        toast({
-          title: "Request failed",
-          message: `There was an error processing your request: ${error.message}. Please try again.`,
-          type: "error"
-        });
-      });
-  }, [image, email, toast]);
+      }
+    };
+    
+    // Start processing images
+    processImages();
+  }, [images, email, toast]);
   
   /**
    * Handle Razorpay payment
    */
   const handlePayment = useCallback(async () => {
-    if (!image || !email) {
+    if (!images.length || !email) {
       toast({
         title: "Missing Information",
-        message: "Please upload an image and provide your email address",
+        message: "Please upload at least one image and provide your email address",
         type: "error"
       });
       return;
     }
 
     try {
+      // Calculate total amount based on new pricing
+      const totalAmount = images.length === 1 ? 49 :
+                         images.length === 2 ? 69 :
+                         79;
+
       // Create order
       const orderResponse = await fetch('/api/create-order', {
         method: 'POST',
@@ -247,7 +312,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: 49, // ₹499
+          amount: totalAmount * 100, // Convert to paise (multiply by 100)
           currency: 'INR'
         }),
       });
@@ -263,7 +328,7 @@ export default function Home() {
         amount: orderData.amount,
         currency: orderData.currency,
         name: "Ghibli Image Generator",
-        description: "Premium Image Generation Service",
+        description: `Premium Image Generation Service - ${images.length} image(s)`,
         order_id: orderData.id,
         prefill: {
           email: email,
@@ -292,26 +357,26 @@ export default function Home() {
         type: "error"
       });
     }
-  }, [image, email, handleConfirmGenerate, toast]);
+  }, [images, email, handleConfirmGenerate, toast]);
   
   /**
    * Handle image generation
    */
   const handleGenerate = useCallback(() => {
-    if (!image) return;
+    if (!images.length) return;
     setShowAlert(true);
-  }, [image]);
+  }, [images.length]);
   
   /**
    * Handle image download
    */
   const handleDownload = useCallback(async () => {
-    if (!generatedImage) return;
+    if (!generatedImages.length) return;
     
     setIsDownloading(true);
     
     try {
-      await downloadImage(generatedImage, "ghibli-artwork.jpg");
+      await downloadImage(generatedImages[0], "ghibli-artwork.jpg");
       
       toast({
         title: "Download successful",
@@ -327,7 +392,7 @@ export default function Home() {
     } finally {
       setIsDownloading(false);
     }
-  }, [generatedImage, toast]);
+  }, [generatedImages, toast]);
   
   // Icons for the UI
   const icons = {
@@ -338,7 +403,7 @@ export default function Home() {
     ),
     spirited: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20.354 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
       </svg>
     ),
     totoro: (
@@ -407,32 +472,100 @@ export default function Home() {
           <div className="space-y-8">
             {/* Upload Section */}
             <div ref={addCardRef} className="glass-card card-gradient-hover p-6 relative">
-              <h2 className="text-xl font-semibold mb-4 text-white/90">Upload Image</h2>
+              <h2 className="text-xl font-semibold mb-4 text-white/90">Upload Images</h2>
               <Dropzone onFileDrop={handleFileDrop} />
-              {image && (
+              {images.length > 0 && (
                 <div className="mt-4">
-                  {preview ? (
-                    <div className="relative aspect-video glass-input rounded-xl overflow-hidden">
-                      <img 
-                        src={preview} 
-                        alt="Preview" 
-                        className="max-h-full max-w-full object-contain"
-                      />
-                    </div>
-                  ) : (
-                    <div className="text-amber-400 text-sm flex items-center">
-                      <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                      Loading image preview...
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                    {previews.map((preview, index) => (
+                      <div key={index} className="relative group">
+                        <div className="relative aspect-square glass-input rounded-xl overflow-hidden">
+                          <img 
+                            src={preview} 
+                            alt={`Preview ${index + 1}`} 
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-2 right-2 p-1 bg-red-500/80 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            title="Remove image"
+                          >
+                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-1 truncate">
+                          {images[index].name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  {images.length > 0 && images.length < 3 && (
+                    <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-base font-medium text-green-400">
+                            {images.length === 1 
+                              ? "Add one more image for just ₹20 more!"
+                              : "Add one more image for just ₹10 more!"}
+                          </span>
+                        </div>
+                        <span className="text-2xl font-bold text-green-400">
+                          {images.length === 1 ? "+₹20" : "+₹10"}
+                        </span>
+                      </div>
                     </div>
                   )}
+                  <div className="mt-4 space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-400">Original price ({images.length} × ₹49)</span>
+                      <span className="text-white">₹{images.length * 49}</span>
+                    </div>
+                    {images.length > 1 && (
+                      <div className="flex items-center justify-between text-sm text-green-400">
+                        <span>Special discount</span>
+                        <span>-₹{(images.length * 49) - (images.length === 2 ? 69 : 79)}</span>
+                      </div>
+                    )}
+                    {images.length > 1 && (
+                      <div className="flex items-center justify-between text-sm text-amber-400">
+                        <span>Special offer</span>
+                        <span>
+                          {images.length === 2 
+                            ? "Get 2 images for ₹69" 
+                            : "Get 3 images for ₹79"}
+                        </span>
+                      </div>
+                    )}
+                    {images.length > 1 && (
+                      <div className="flex items-center justify-between text-sm text-green-400">
+                        <span>Price per image</span>
+                        <span>
+                          {images.length === 2 
+                            ? "₹34.50 per image" 
+                            : "₹26.33 per image"}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-base font-medium pt-2 border-t border-gray-700">
+                      <span className="text-white">Total price</span>
+                      <span className="text-white">
+                        {images.length === 1 ? '₹49' : 
+                         images.length === 2 ? '₹69' : 
+                         '₹79'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
             
             {/* Customization Section */}
-            {image && (
+            {images.length > 0 && (
               <div ref={addCardRef} className="glass-card card-gradient-hover p-8 relative">
                 <h2 className="text-xl font-semibold mb-6 text-white/90">Customization Prompt</h2>
                 <div className="relative">
@@ -496,12 +629,12 @@ export default function Home() {
                   <Button 
                     variant="gradient" 
                     onClick={handlePayment}
-                    disabled={isGenerating || !image || !email}
+                    disabled={isGenerating || !images.length || !email}
                     className="w-full"
                   >
                     {isGenerating ? 'Processing...' : 'Generate Ghibli Art'}
                   </Button>
-                  {!email.trim() && image && (
+                  {!email.trim() && images.length > 0 && (
                     <p className="text-xs text-amber-400 mt-2 text-center">
                       Please enter your email to generate artwork
                     </p>
