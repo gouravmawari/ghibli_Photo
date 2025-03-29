@@ -1,17 +1,5 @@
 "use client";
 
-<<<<<<< HEAD
-import { ToastProvider } from "@/hooks/use-toast";
-import { Toaster } from "@/components/ui/toast";
-
-export function Providers({ children }) {
-  return (
-    <ToastProvider>
-      {children}
-      <Toaster />
-    </ToastProvider>
-  );
-=======
 import { createContext, useContext, useState } from "react";
 import { Toast } from "@/components/ui/toast";
 
@@ -52,5 +40,4 @@ export function useToast() {
     throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
->>>>>>> ceb7e6c (added pay message)
 } 

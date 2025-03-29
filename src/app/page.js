@@ -3,11 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-<<<<<<< HEAD
-import { useToast } from "@/hooks/use-toast";
-=======
 import { useToast } from "@/components/providers";
->>>>>>> ceb7e6c (added pay message)
 import Dropzone from "@/components/dropzone";
 import StylePresetButton from "@/components/style-preset-button";
 import { downloadImage } from "@/lib/utils";
@@ -293,8 +289,8 @@ export default function Home() {
       {/* Buy Me a Coffee Button */}
       <a 
         href="https://buymeacoffee.com/gauravMawari" 
-        target="_blank" 
-        rel="noopener noreferrer" 
+            target="_blank"
+            rel="noopener noreferrer"
         className="fixed top-4 right-4 z-50 glass-card flex items-center gap-2 px-3 py-2 rounded-full hover:scale-105 transition-all duration-300 shadow-lg border border-yellow-400/20"
         title="Buy Me a Coffee"
       >
@@ -443,12 +439,7 @@ export default function Home() {
             <div className="glass-card p-8 max-w-md w-full mx-4 relative">
               <h3 className="text-xl font-semibold mb-4 text-white/90">Processing Your Request</h3>
               <p className="text-gray-400 mb-6">
-<<<<<<< HEAD
-                Your Ghibli-style artwork will be sent to your email within 10-60 minutes. 
-                Please check your inbox and spam folder.
-=======
                 We are currently facing high volume of images including spam images. Please check your mail and follow the steps to get your image under 15 mins.
->>>>>>> ceb7e6c (added pay message)
               </p>
               <div className="flex justify-end">
                 <Button 
@@ -516,8 +507,8 @@ export default function Home() {
           <p>© 2025 Ghibli Image Generator. All rights reserved.</p>
           <p className="mt-2">Powered by Next.js, Tailwind CSS, and OpenAI</p>
           <p className="mt-2">Made with <span className="text-red-500">❤️</span> by Team Raga</p>
-        </footer>
-      </div>
+      </footer>
+    </div>
     </main>
   );
-} 
+}
