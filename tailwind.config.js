@@ -31,6 +31,8 @@ module.exports = {
         'spin-slow': 'spin 3s linear infinite',
         shimmer: 'shimmer 2s linear infinite',
         gradient: 'gradient 8s ease infinite',
+        'price-pulse': 'price-pulse 2s ease-in-out infinite',
+        'gradient-border': 'gradient-border 1s linear infinite',
       },
       keyframes: {
         shimmer: {
@@ -41,11 +43,24 @@ module.exports = {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
+        'price-pulse': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.1)' },
+        },
+        'gradient-border': {
+          '0%': { backgroundPosition: '0% 0%' },
+          '25%': { backgroundPosition: '100% 0%' },
+          '50%': { backgroundPosition: '100% 100%' },
+          '75%': { backgroundPosition: '0% 100%' },
+          '100%': { backgroundPosition: '0% 0%' },
+        },
       },
       backgroundImage: {
         'gradient-text': 'linear-gradient(90deg, #8A56FF, #38BDF8)',
         'gradient-btn': 'linear-gradient(90deg, #8A56FF, #38BDF8)',
         'gradient-btn-hover': 'linear-gradient(90deg, #7C3AFF, #0EA5E9)',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
     },
   },

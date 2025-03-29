@@ -474,94 +474,101 @@ export default function Home() {
             <div ref={addCardRef} className="glass-card card-gradient-hover p-6 relative">
               <h2 className="text-xl font-semibold mb-4 text-white/90">Upload Images</h2>
               <Dropzone onFileDrop={handleFileDrop} />
-              {images.length > 0 && (
-                <div className="mt-4">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    {previews.map((preview, index) => (
-                      <div key={index} className="relative group">
-                        <div className="relative aspect-square glass-input rounded-xl overflow-hidden">
-                          <img 
-                            src={preview} 
-                            alt={`Preview ${index + 1}`} 
-                            className="w-full h-full object-cover"
-                          />
-                          <button
-                            onClick={() => handleRemoveImage(index)}
-                            className="absolute top-2 right-2 p-1 bg-red-500/80 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                            title="Remove image"
-                          >
-                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </div>
-                        <p className="text-xs text-gray-400 mt-1 truncate">
-                          {images[index].name}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  {images.length > 0 && images.length < 3 && (
-                    <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="mt-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {previews.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <div className="relative aspect-square glass-input rounded-xl overflow-hidden">
+                        <img 
+                          src={preview} 
+                          alt={`Preview ${index + 1}`} 
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-2 right-2 p-1 bg-red-500/80 hover:bg-red-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          title="Remove image"
+                        >
+                          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
-                          <span className="text-base font-medium text-green-400">
-                            {images.length === 1 
-                              ? "Add one more image for just ₹20 more!"
-                              : "Add one more image for just ₹10 more!"}
-                          </span>
-                        </div>
-                        <span className="text-2xl font-bold text-green-400">
-                          {images.length === 1 ? "+₹20" : "+₹10"}
-                        </span>
+                        </button>
                       </div>
+                      <p className="text-xs text-gray-400 mt-1 truncate">
+                        {images[index].name}
+                      </p>
                     </div>
-                  )}
-                  <div className="mt-4 space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-400">Original price ({images.length} × ₹49)</span>
-                      <span className="text-white">₹{images.length * 49}</span>
-                    </div>
-                    {images.length > 1 && (
-                      <div className="flex items-center justify-between text-sm text-green-400">
-                        <span>Special discount</span>
-                        <span>-₹{(images.length * 49) - (images.length === 2 ? 69 : 79)}</span>
-                      </div>
-                    )}
-                    {images.length > 1 && (
-                      <div className="flex items-center justify-between text-sm text-amber-400">
-                        <span>Special offer</span>
-                        <span>
-                          {images.length === 2 
-                            ? "Get 2 images for ₹69" 
-                            : "Get 3 images for ₹79"}
+                  ))}
+                </div>
+                {images.length > 0 && images.length < 3 && (
+                  <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-2 border-green-500/20 relative overflow-hidden group">
+                    {/* Animated border gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-green-500/0 via-green-500/20 to-green-500/0 animate-gradient-x"></div>
+                    {/* Moving gradient border */}
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-500/0 via-green-500/40 to-green-500/0 animate-gradient-border border-2 border-transparent"></div>
+                    
+                    <div className="flex items-center justify-between relative">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-green-400 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm font-medium text-green-400">
+                          {images.length === 1 
+                            ? "Add one more image for just ₹20 more!"
+                            : "Add one more image for just ₹10 more!"}
                         </span>
                       </div>
-                    )}
-                    {images.length > 1 && (
-                      <div className="flex items-center justify-between text-sm text-green-400">
-                        <span>Price per image</span>
-                        <span>
-                          {images.length === 2 
-                            ? "₹34.50 per image" 
-                            : "₹26.33 per image"}
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between text-base font-medium pt-2 border-t border-gray-700">
-                      <span className="text-white">Total price</span>
-                      <span className="text-white">
-                        {images.length === 1 ? '₹49' : 
-                         images.length === 2 ? '₹69' : 
-                         '₹79'}
+                      <span className="text-2xl font-bold text-green-400 animate-price-pulse">
+                        {images.length === 1 ? "+₹20" : "+₹10"}
                       </span>
                     </div>
                   </div>
+                )}
+                <div className="mt-4 space-y-2">
+                  {images.length > 0 && (
+                    <>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">Original price ({images.length} × ₹49)</span>
+                        <span className="text-white">₹{images.length * 49}</span>
+                      </div>
+                      {images.length > 1 && (
+                        <div className="flex items-center justify-between text-sm text-green-400">
+                          <span>Special discount</span>
+                          <span>-₹{(images.length * 49) - (images.length === 2 ? 69 : 79)}</span>
+                        </div>
+                      )}
+                      {images.length > 1 && (
+                        <div className="flex items-center justify-between text-sm text-amber-400">
+                          <span>Special offer</span>
+                          <span>
+                            {images.length === 2 
+                              ? "Get 2 images for ₹69" 
+                              : "Get 3 images for ₹79"}
+                          </span>
+                        </div>
+                      )}
+                      {images.length > 1 && (
+                        <div className="flex items-center justify-between text-sm text-green-400">
+                          <span>Price per image</span>
+                          <span>
+                            {images.length === 2 
+                              ? "₹34.50 per image" 
+                              : "₹26.33 per image"}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between text-base font-medium pt-2 border-t border-gray-700">
+                        <span className="text-white">Total price</span>
+                        <span className="text-white">
+                          {images.length === 1 ? '₹49' : 
+                           images.length === 2 ? '₹69' : 
+                           '₹79'}
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
             
             {/* Customization Section */}

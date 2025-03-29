@@ -1,4 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/api/proxy-upload/route": "app/api/proxy-upload/route.js"
+  "/api/create-order/route": "app/api/create-order/route.js",
+  "/page": "app/page.js"
 }
